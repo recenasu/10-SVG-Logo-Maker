@@ -4,27 +4,10 @@ const fs = require('fs');
 // Define variable to include the "inquirer" npm module
 const inquirer = require('inquirer');
 
-// Define global variables for the selected shape and icon.
-var icon = "";
-var shape = "";
+// Define global variable for the SVG contents.
+var contentsSVG = "";
 
-// Define shape objects
-const circleShape = {
-    name: "Circle",
-    icon: "circle shape",
-}
-
-const triangleShape = {
-    name: "Triangle",
-    icon: "triangle shape",
-}
-
-const squareShape = {
-    name: "Square",
-    icon: "square shape",
-}
-
-// Inquirer prompts. The 'key' is the 'name' property. The 'value' is the string value entered by the user.
+// Inquirer prompts for the 4 questions. The 'key' is the 'name' property. The 'value' is the string value entered by the user.
 inquirer
     .prompt([
         {
@@ -36,15 +19,15 @@ inquirer
             type: 'input',
             message: 'Enter a color keyword or a hex value for the text color:',
             name: 'logoTextColor',
-        },        
+        },
         {
             type: 'list',
             message: 'Choose a shape for your logo:',
             name: 'logoShape',
             choices: [
-                circleShape.name,
-                triangleShape.name,
-                squareShape.name,
+                "Circle",
+                "Triangle",
+                "Square",
             ],
         },
         {
@@ -55,36 +38,34 @@ inquirer
     ])
     .then((response) => {
 
-        // Set the "icon" and "shape" variables based on selection.
+        // Variables for SVG file content variants
+        let circleSVG = `<svg viewBox = "0 0 300 200" xmlns = "http://www.w3.org/2000/svg"> --> <circle cx="50%" cy="50%" r="80" fill="${response.logoShapeColor}"/>
+        <text x="84" y="120" font-family="Arial, Helvetica, sans-serif" font-style="normal" font-size="4em" fill="${response.logoTextColor}">${response.logoText}</text></svg>`
+
+        let squareSVG = `<svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+        <rect x="60" y="20" width="60%" height="80%" fill="${response.logoShapeColor}"/>
+        <text x="50%" y="50%" font-family="Arial, Helvetica, sans-serif" font-style="normal" font-size="4em" fill="${response.logoTextColor}" text-anchor="middle" dominant-baseline="middle">${response.logoText}</text>      </svg>`
+
+        let triangleSVG = `<svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><polygon points="30,180 150,20 270,180" fill="${response.logoShapeColor}"/><text x="50%" y="160" font-family="Arial, Helvetica, sans-serif" font-style="normal" font-size="4em" text-anchor="middle" fill="${response.logoTextColor}">${response.logoText}</text></svg>`
+
+        // Set the contentsSVG variable based on selection.
         switch (response.logoShape) {
-            case circleShape.name:
-                icon = circleShape.icon;
-                shape = circleShape.name;
+            case "Circle":
+                contentsSVG = circleSVG;
                 break;
-            case triangleShape.name:
-                icon = triangleShape.icon;
-                shape = triangleShape.name;
+            case "Triangle":
+                contentsSVG = triangleSVG;
                 break;
-            case squareShape.name:
-                icon = squareShape.icon;
-                shape = squareShape.name;
+            case "Square":
+                contentsSVG = squareSVG;
                 break;
             default:
-                icon = "NA";
-                shape = "NA";
+                contentsSVG = circleSVG
         }
 
-        // Define variable for creating the logo.svg file.
-        // TO DO: refer to some function
-        // TO DO: remember 300x200 requirements
+        // Generate logo.svg file
+        fs.appendFile('logo.svg', contentsSVG, (err) => err ? console.error(err) : console.log('Generated logo.svg'));
 
-        // TO DO: Generate success message as part of a .then:
-        console.log('Generated logo.svg');
-        
-
-        // Developer console logs
-        console.log(response);
-        console.log(icon);
-        console.log(shape);
+       
     }
     );
