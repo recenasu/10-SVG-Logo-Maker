@@ -4,8 +4,8 @@ const fs = require('fs');
 // Define variable to include the "inquirer" npm module
 const inquirer = require('inquirer');
 
-// Define global variable for the SVG contents.
-var contentsSVG = "";
+// Define variable for Shape constructor from shape.js containing the validated svg file contents.
+const Shape = require('./lib/shape.js');
 
 // Inquirer prompts for the 4 questions. The 'key' is the 'name' property. The 'value' is the string value entered by the user.
 inquirer
@@ -38,37 +38,27 @@ inquirer
     ])
     .then((response) => {
 
-        // Variables for SVG file content variants
-        let circleSVG = `<svg viewBox = "0 0 300 200" xmlns = "http://www.w3.org/2000/svg"> --> <circle cx="50%" cy="50%" r="80" fill="${response.logoShapeColor}"/>
-        <text x="50%" y="60%" font-family="Arial, Helvetica, sans-serif" font-style="normal" font-size="4em" text-anchor="middle" fill="${response.logoTextColor}">${response.logoText}</text></svg>`
+        // // Variables for SVG file content variants
+        // let circleSVG = `<svg viewBox = "0 0 300 200" xmlns = "http://www.w3.org/2000/svg"> --> <circle cx="50%" cy="50%" r="80" fill="${response.logoShapeColor}"/>
+        // <text x="50%" y="60%" font-family="Arial, Helvetica, sans-serif" font-style="normal" font-size="4em" text-anchor="middle" fill="${response.logoTextColor}">${response.logoText}</text></svg>`
 
-        let squareSVG = `<svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
-        <rect x="60" y="20" width="60%" height="80%" fill="${response.logoShapeColor}"/>
-        <text x="50%" y="50%" font-family="Arial, Helvetica, sans-serif" font-style="normal" font-size="4em" fill="${response.logoTextColor}" text-anchor="middle" dominant-baseline="middle">${response.logoText}</text>      </svg>`
+        // let squareSVG = `<svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+        // <rect x="60" y="20" width="60%" height="80%" fill="${response.logoShapeColor}"/>
+        // <text x="50%" y="50%" font-family="Arial, Helvetica, sans-serif" font-style="normal" font-size="4em" fill="${response.logoTextColor}" text-anchor="middle" dominant-baseline="middle">${response.logoText}</text>      </svg>`
 
-        let triangleSVG = `<svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><polygon points="30,180 150,20 270,180" fill="${response.logoShapeColor}"/><text x="50%" y="160" font-family="Arial, Helvetica, sans-serif" font-style="normal" font-size="4em" text-anchor="middle" fill="${response.logoTextColor}">${response.logoText}</text></svg>`
+        // let triangleSVG = `<svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><polygon points="30,180 150,20 270,180" fill="${response.logoShapeColor}"/><text x="50%" y="160" font-family="Arial, Helvetica, sans-serif" font-style="normal" font-size="4em" text-anchor="middle" fill="${response.logoTextColor}">${response.logoText}</text></svg>`
 
-        // Set the contentsSVG variable based on selection. Default to "circle".
-        switch (response.logoShape) {
-            case "Circle":
-                contentsSVG = circleSVG;
-                break;
-            case "Triangle":
-                contentsSVG = triangleSVG;
-                break;
-            case "Square":
-                contentsSVG = squareSVG;
-                break;
-            default:
-                contentsSVG = circleSVG
-        }
+        const contentsSVG = new Shape(response.logoText, response.logoTextColor, response.logoShape, response.logoShapeColor);
+
+        // console.log(contentsSVG.render());
 
         // Generate logo.svg file
-        fs.appendFile('logo.svg', contentsSVG, (err) => err ? console.error(err) : console.log('Generated logo.svg'));
+        fs.appendFile('logo.svg', contentsSVG.render(), (err) => err ? console.error(err) : console.log('Generated logo.svg'));
 
-// TO DO
-// Add validation of entries prior to the switch and add corresponding failure messages 
+        // TO DO
+        // Add validation for entries
+        // Add jest testing per the challenge README
 
-       
+
     }
     );
