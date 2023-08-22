@@ -1,13 +1,23 @@
+// This file uses the Inquirer npm module to prompt the user for inputs. The user input "logoShape" is used to execute 1 of 3 classes (Square, Triangle, or Circle) which are children of the Shape class used to validate the user inputs. The executed class renders a string containing SVG elements. The code in this file then uses fs.appendFile to create a new "logo.svg" file from the rendered SVG elements.
+
 // Define variable to import the "fs" module to enable interaction with the file system
 const fs = require('fs');
 
 // Define variable to include the "inquirer" npm module
 const inquirer = require('inquirer');
 
-// Define variable for Shape constructor from shape.js containing the validated svg file contents.
-const Shape = require('./lib/shape.js');
+// Define variables for the shape constructors from the different .js files constructing the svg elements based on the user logoShape selection.
+const Circle = require('./lib/circle.js');
+const Triangle = require('./lib/triangle.js');
+const Square = require('./lib/square.js');
 
-// Inquirer prompts for the 4 questions. The 'key' is the 'name' property. The 'value' is the string value entered by the user.
+// Define an emtpy global variable to receive the contents of the SVG file.
+var contentsSVG = "";
+
+// This function executes the program.
+function init () {
+    
+    // Inquirer prompts for the 4 questions. The 'key' is the 'name' property. The 'value' is the string value entered by the user.
 inquirer
     .prompt([
         {
@@ -38,27 +48,47 @@ inquirer
     ])
     .then((response) => {
 
-        // // Variables for SVG file content variants
-        // let circleSVG = `<svg viewBox = "0 0 300 200" xmlns = "http://www.w3.org/2000/svg"> --> <circle cx="50%" cy="50%" r="80" fill="${response.logoShapeColor}"/>
-        // <text x="50%" y="60%" font-family="Arial, Helvetica, sans-serif" font-style="normal" font-size="4em" text-anchor="middle" fill="${response.logoTextColor}">${response.logoText}</text></svg>`
 
-        // let squareSVG = `<svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
-        // <rect x="60" y="20" width="60%" height="80%" fill="${response.logoShapeColor}"/>
-        // <text x="50%" y="50%" font-family="Arial, Helvetica, sans-serif" font-style="normal" font-size="4em" fill="${response.logoTextColor}" text-anchor="middle" dominant-baseline="middle">${response.logoText}</text>      </svg>`
-
-        // let triangleSVG = `<svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg"><polygon points="30,180 150,20 270,180" fill="${response.logoShapeColor}"/><text x="50%" y="160" font-family="Arial, Helvetica, sans-serif" font-style="normal" font-size="4em" text-anchor="middle" fill="${response.logoTextColor}">${response.logoText}</text></svg>`
-
-        const contentsSVG = new Shape(response.logoText, response.logoTextColor, response.logoShape, response.logoShapeColor);
-
-        // console.log(contentsSVG.render());
-
+        switch (response.logoShape) {
+            case "Circle":
+                contentsSVG = new Circle(
+                    response.logoShapeColor,
+                    response.logoTextColor,
+                    response.logoText
+                );
+                break;
+            case "Triangle":
+                contentsSVG = new Triangle(
+                    response.logoShapeColor,
+                    response.logoTextColor,
+                    response.logoText
+                );
+                break;
+            case "Square":
+                contentsSVG = new Square(
+                    response.logoShapeColor,
+                    response.logoTextColor,
+                    response.logoText
+                );
+                break;
+            default:
+                contentsSVG = new Circle(
+                    response.logoShapeColor,
+                    response.logoTextColor,
+                    response.logoText
+                );
+        }
+        
         // Generate logo.svg file
         fs.appendFile('logo.svg', contentsSVG.render(), (err) => err ? console.error(err) : console.log('Generated logo.svg'));
 
         // TO DO
         // Add validation for entries
-        // Add jest testing per the challenge README
+        // Add jest testing per the challenge README. Look in the header.js test in the Mini-project for some ideas. Basically, you are testing that the SVG format is returned from the render() method.
 
 
     }
     );
+}
+
+init();
