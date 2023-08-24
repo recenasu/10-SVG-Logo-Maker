@@ -1,17 +1,17 @@
-// This file uses the Inquirer npm module to prompt the user for inputs. The user input "logoShape" is used to execute 1 of 3 classes (Square, Triangle, or Circle) which are children of the Shape class used to validate the user inputs. The executed class renders a string containing SVG elements. The code in this file then uses fs.appendFile to create a new "logo.svg" file from the rendered SVG elements.
+// This file uses the Inquirer npm module to prompt the user for inputs. The user input "logoShape" is used to execute 1 of 3 classes (Square, Triangle, or Circle) which are children of the Shape class. The Shape class is used to validate the user inputs. The executed class (Square, Triangle, or Circle) renders a string containing the appropriate SVG elements. fs.appendFile is then used to create a new "logo.svg" file from the rendered SVG elements.
 
 // Define variable to import the "fs" module to enable interaction with the file system
 const fs = require('fs');
 
-// Define variable to include the "inquirer" npm module
+// Define variable to import the "inquirer" npm module for user prompts
 const inquirer = require('inquirer');
 
-// Define variables for the shape constructors from the different .js files constructing the svg elements based on the user logoShape selection.
+// Define variables to import the different shape classes contained in other files.
 const Circle = require('./lib/circle.js');
 const Triangle = require('./lib/triangle.js');
 const Square = require('./lib/square.js');
 
-// Define an emtpy global variable to receive the contents of the SVG file.
+// Define an empty global variable. This will be assigned the appropriate shape class (Square, Triangle, or Circle) based on the user selection.
 var contentsSVG = "";
 
 // This function executes the program.
@@ -48,7 +48,7 @@ inquirer
     ])
     .then((response) => {
 
-
+// This statement assigns a class (Circle, Triangle, or Square) to the contentsSVG variable based on the user logoShape selection. Circle is the default.
         switch (response.logoShape) {
             case "Circle":
                 contentsSVG = new Circle(
@@ -79,7 +79,7 @@ inquirer
                 );
         }
         
-        // Generate logo.svg file
+        // Generate logo.svg file using the render function of the contentsSVG class. Upon success, print a message to the console.
         fs.appendFile('logo.svg', contentsSVG.render(), (err) => err ? console.error(err) : console.log('Generated logo.svg'));
 
         // TO DO
