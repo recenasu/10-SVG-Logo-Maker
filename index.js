@@ -82,11 +82,7 @@ inquirer
         // Generate logo.svg file using the render function of the contentsSVG class. Upon success, print a message to the console.
         fs.appendFile('logo.svg', contentsSVG.render(), (err) => err ? console.error(err) : console.log('Generated logo.svg'));
 
-        // TO DO
-        // Add validation for entries
-        // Add jest testing per the challenge README. Look in the header.js test in the Mini-project for some ideas. Basically, you are testing that the SVG format is returned from the render() method.
-
-
+        
     }
     );
 }
