@@ -56,6 +56,7 @@ AND the output text "Generated logo.svg" is printed in the command line
 > * Answer each prompt by typing your answer or selecting an option from the menu, when applicable (AC01) (AC02) (AC03) (AC04)
 > * After answering the final prompt, wait for the message that the logo.svg file has been generated (AC05)
 > * Open the newly created "logo.svg" file in the browser (AC06)
+> * The examples folder (./examples) in the project root directory contains sample logos generated using this application. 
 
 The following images show the application sequence and a sample file.
 
